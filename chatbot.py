@@ -14,13 +14,14 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 def get_pdf_text(pdf_docs):
     text = ""
     for pdf in pdf_docs:
-        pdf_reader = PdfReader(pdf)  # PdfReader accepts a BytesIO object
+        pdf_reader = PdfReader(pdf)
         for page in pdf_reader.pages:
+
             text += page.extract_text()
     return text
 
@@ -83,13 +84,13 @@ def main():
         st.title("Menu:")
         pdf_docs = st.file_uploader(
             "Upload your PDF files and click on the Submit & Process button",
-            accept_multiple_files=True,  # Allow multiple files to be uploaded
+            accept_multiple_files=True,
             type=["pdf"]
         )
         if st.button("Submit & Process"):
             if pdf_docs:
                 with st.spinner("Processing..."):
-                    raw_text = get_pdf_text(pdf_docs)  # Pass the list of uploaded files
+                    raw_text = get_pdf_text(pdf_docs)
                     text_chunks = get_text_chunks(raw_text)
                     get_vector_store(text_chunks)
                     st.success("Done")
